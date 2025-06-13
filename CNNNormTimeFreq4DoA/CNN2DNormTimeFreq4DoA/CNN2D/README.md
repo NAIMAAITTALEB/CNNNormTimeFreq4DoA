@@ -40,6 +40,7 @@ Epoch 010,Train Loss: 519.3103, Validation Loss: 535.3936
 #### 100 Epoch
 
 ```bash
+Epoch 001,Train Loss: 1750.0687, Validation Loss: 897.4074 
 ...
 ...
 Epoch 094, Train Loss: 388.9873, Validation Loss: 394.6313 
@@ -76,8 +77,8 @@ Mean Absolute Error: 12.81
 ```text
 Pred: 30.01° / True: 25.99° → Error: 4.02°
 Pred: 30.47° / True: 44.99° → Error: 14.53°
-Pred: 73.05° / True: 62.40° → Error: 10.65°
 ...
+Pred: 67.31° / True: 65.70° → Error: 1.60°
 Mean Absolute Error: 10.96°
 ```
 
