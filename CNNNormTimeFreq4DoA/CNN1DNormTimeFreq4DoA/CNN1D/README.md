@@ -1,4 +1,4 @@
-# Estimation robuste de la DoA large bande par CNN et Critère Normalisé Temps-Fréquence Pondéré
+# Estimation robuste de la DoA large bande par CNN1D et Critère Normalisé Temps-Fréquence Pondéré
 
 Ce projet expose une chaîne algorithmique complète dédiée à l’estimation de l’angle d’arrivée (DoA) d’une source acoustique à partir de signaux microphoniques simulés, mobilisant un réseau de neurones convolutif (CNN) et un critère de perte pondéré appliqué à la représentation temps-fréquence normalisée.
 
