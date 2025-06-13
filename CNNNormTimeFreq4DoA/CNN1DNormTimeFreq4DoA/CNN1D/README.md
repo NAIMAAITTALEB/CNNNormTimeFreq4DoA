@@ -213,6 +213,9 @@ Validation Loss: 482.1757
 Epoch 10, Loss: 487.9120
 Validation Loss: 413.1413
 ```
+**MAE ≈ √(MSE ou Loss), mais ceci n’est qu’une estimation approximative. Calculez directement le MAE pour plus de précision !
+MAE = 10 signifie que vos prédictions s’écartent en moyenne de 10 degrés par rapport à la valeur réelle.**
+
 
 #### Explication détaillée
 
