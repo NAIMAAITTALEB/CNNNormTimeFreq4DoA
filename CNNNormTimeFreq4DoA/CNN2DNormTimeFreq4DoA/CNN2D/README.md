@@ -52,6 +52,9 @@ Epoch 099, Train Loss: 390.2861, Validation Loss: 393.5433
 Epoch 100, Train Loss: 388.3509, Validation Loss: 393.1766 
 ```
 
+**MAE ≈ √(MSE ou Loss), mais ceci n’est qu’une estimation approximative. Calculez directement le MAE pour plus de précision !
+MAE = 10 signifie que vos prédictions s’écartent en moyenne de 10 degrés par rapport à la valeur réelle.**
+
 * Sauvegarde le modèle dans `cnn2d_wideband.pt`.
 
 ### 3. Test du modèle
