@@ -26,49 +26,53 @@ python generate_data.py
 python train.py
 ```
 
+#### 10 Epoch
 ```bash
-Epoch 094, LR: 6.25e-05, Train Loss: 388.9873, Validation Loss: 394.6313 
-Epoch 095, LR: 6.25e-05, Train Loss: 387.5716, Validation Loss: 393.4338 
-Epoch 096, LR: 6.25e-05, Train Loss: 399.0940, Validation Loss: 392.9662 
-Epoch 097, LR: 6.25e-05, Train Loss: 393.8169, Validation Loss: 403.2364 
-Epoch 098, LR: 3.13e-05, Train Loss: 391.1696, Validation Loss: 393.6171 
-Epoch 099, LR: 3.13e-05, Train Loss: 390.2861, Validation Loss: 393.5433 
-Epoch 100, LR: 3.13e-05, Train Loss: 388.3509, Validation Loss: 393.1766 
-Training complete. Best Validation Loss: 392.6108 at epoch 82.
+Epoch 001,Train Loss: 1761.0637, Validation Loss: 887.4044 
+Epoch 002,Train Loss: 997.9656, Validation Loss: 849.4402 
+Epoch 003,Train Loss: 911.5387, Validation Loss: 802.2366 
+...
+...
+Epoch 009,Train Loss: 516.8367, Validation Loss: 499.3397 
+Epoch 010,Train Loss: 519.3103, Validation Loss: 535.3936
 ```
 
-* Sauvegarde les poids du meilleur modèle dans `cnn2d_wideband_best.pt` and `cnn2d_wideband_last.pt`.
+#### 100 Epoch
+
+```bash
+...
+...
+Epoch 094, Train Loss: 388.9873, Validation Loss: 394.6313 
+Epoch 095, Train Loss: 387.5716, Validation Loss: 393.4338 
+Epoch 096, Train Loss: 399.0940, Validation Loss: 392.9662 
+Epoch 097, Train Loss: 393.8169, Validation Loss: 403.2364 
+Epoch 098, Train Loss: 391.1696, Validation Loss: 393.6171 
+Epoch 099, Train Loss: 390.2861, Validation Loss: 393.5433 
+Epoch 100, Train Loss: 388.3509, Validation Loss: 393.1766 
+```
+
+* Sauvegarde le modèle dans `cnn2d_wideband.pt`.
 
 ### 3. Test du modèle
 
 ```bash
 python test.py
 ```
-
-
-* Affiche la MAE et les erreurs DoA prédites vs vraies.
-
-## Dépendances
-
+#### 10 Epoch
 ```bash
-pip install numpy scipy torch pyroomacoustics matplotlib
+#### 100 Epoch
+Pred: -52.76° / True: -35.39° → Error: 17.37°
+Pred: -53.03° / True: -51.17° → Error: 1.87°
+...
+...
+Pred: 29.67° / True: 32.01° → Error: 2.34°
+Pred: 65.16° / True: 68.61° → Error: 3.45°
+Pred: 66.31° / True: 65.70° → Error: 0.60°
+Mean Absolute Error: 12.81
 ```
 
-## Architecture du Modèle CNN2D
 
-* 4 blocs résiduels convolutionnels (32 → 256 canaux)
-* Blocs SE adaptatifs par canal
-* Pooling global + 2 couches fully-connected
-* Activation LeakyReLU, Dropout
-* Perte : Mean Squared Error pondérée
-
-## Résultats de l’entraînement
-
-* Meilleure validation atteinte : **392.61** à l'époque 82
-* Comportement typique d’une convergence progressive avec stabilisation
-
-## Prédictions sur le jeu de test
-
+#### 100 Epoch
 ```text
 Pred: 30.01° / True: 25.99° → Error: 4.02°
 Pred: 30.47° / True: 44.99° → Error: 14.53°
@@ -81,17 +85,85 @@ Mean Absolute Error: 10.96°
 * **Erreurs modérées (5–20°)** : Présentes en zone intermédiaire
 * **Erreurs fortes (>20°)** : Cas extrêmes (angles aux limites ou bruit élevé)
 
+
+* Affiche la MAE et les erreurs DoA prédites vs vraies.
+
+
+## Architecture du Modèle CNN2D\_Doa
+
+* 4 blocs résiduels convolutionnels (8 → 32 → 64 → 128 → 256 canaux)
+* Blocs SE adaptatifs intégrés dans chaque bloc résiduel
+* Pooling global (AdaptiveAvgPool2D) suivi de 2 couches fully-connected
+* Activations LeakyReLU (slope = 0.1), Dropout (p = 0.3) dans convolutions et dense
+* Perte : **Mean Squared Error pondérée** avec pondération basée sur la cible
+
+
+## Résultats de l’entraînement
+
+* Meilleure validation atteinte : **392.61** à l'époque 82
+* Comportement typique d’une convergence progressive avec stabilisation
+
+
 ## Analyse visuelle des données (figures)
 
-* **Carte de chaleur moyenne temps-antennes** : `Heatmap_Temps_Antennes.png`
-* **Écart-type (bruit) par antenne** : `STD_Bruit_Antennes_Exemple_1297.png`
-* **Signal temporel multi-antennes (DoA = 13.96°)** : `Signal_Antennes_DoA_13.96.png`
-* **Vue globale des signaux temporels** : `Signal_Temporel_Antennes.png`
-* **Moyenne temporelle multi-antennes** : `Signal_Temporel_Moyen_Antennes.png`
-* **Spectre STFT individuel (Antenne 0)** : `Spectre_STFT_Antenne_0.png`
-* **STFT moyen sur l’antenne 0** : `Spectre_STFT_Moyen_Antenne_0.png`
-* **Zoom temporel sur l’antenne 0** : `Zoom_Antenne_0.png`
-* **Zoom temps-fréquence sur l’antenne 0** : `Zoom_TF_Antenne_0.png`
+
+### **Carte de chaleur moyenne temps-antennes**
+
+**Fichier** : `Heatmap_Temps_Antennes.png`
+**Description** :
+Cette carte de chaleur montre la moyenne de l’intensité du signal reçue par chaque antenne au cours du temps. Elle permet d’identifier des schémas de propagation ou de réception dominants, ainsi que des variations de phase ou de synchronisation entre les canaux. Elle est utile pour repérer visuellement la présence d’une onde plane incidente ou d’un signal cohérent.
+
+
+### **Écart-type (bruit) par antenne**
+
+**Fichier** : `STD_Bruit_Antennes_Exemple_1297.png`
+**Description** :
+Ce graphique présente la distribution de l’écart-type (σ) du bruit mesuré sur chaque antenne pour un exemple donné. Il met en évidence la stabilité ou la variabilité du bruit entre les capteurs, permettant d’identifier d’éventuelles antennes défaillantes ou des artefacts matériels.
+
+
+### **Signal temporel multi-antennes (DoA ≈ 13.96°)**
+
+**Fichier** : `Signal_Antennes_DoA_13.96.png`
+**Description** :
+Visualisation synchronisée des signaux bruts issus de toutes les antennes lors d’un scénario où la direction d’arrivée estimée est d’environ 13.96°. Ce graphique permet d’analyser le décalage temporel relatif entre les canaux, reflet direct de l’angle d’arrivée du front d’onde.
+
+
+### 🧭 **Vue globale des signaux temporels**
+
+**Fichier** : `Signal_Temporel_Antennes.png`
+**Description** :
+Affichage simultané des signaux temporels pour toutes les antennes sur une fenêtre complète. Cette vue fournit un aperçu macro de la dynamique du signal, de sa périodicité, et des niveaux d’énergie.
+
+### **Moyenne temporelle multi-antennes**
+
+**Fichier** : `Signal_Temporel_Moyen_Antennes.png`
+**Description** :
+Courbe représentant la moyenne temporelle des signaux de toutes les antennes. Elle atténue les composantes spécifiques à un capteur et met en avant la structure commune du signal incident, utile pour l’analyse énergétique globale.
+
+### **Spectre STFT individuel – Antenne 0**
+
+**Fichier** : `Spectre_STFT_Antenne_0.png`
+**Description** :
+Représentation temps-fréquence du signal reçu par l’antenne 0 via transformée de Fourier à court terme (STFT). Elle révèle les composantes fréquentielles dominantes et leur évolution dans le temps, souvent liée au mouvement ou au changement de source.
+
+### **STFT moyen – Antenne 0**
+
+**Fichier** : `Spectre_STFT_Moyen_Antenne_0.png`
+**Description** :
+Spectrogramme résultant de la moyenne temporelle des STFT appliquées au signal de l’antenne 0. Il permet de détecter des signatures spectrales persistantes, telles que les fréquences de modulation ou les bruits stationnaires.
+
+### **Zoom temporel – Antenne 0**
+
+**Fichier** : `Zoom_Antenne_0.png`
+**Description** :
+Zoom sur un segment temporel spécifique du signal reçu par l’antenne 0. Cette vue granulaire permet d’analyser finement les transitions, impulsions, ou réponses transitoires présentes dans le signal.
+
+### **Zoom temps-fréquence – Antenne 0**
+
+**Fichier** : `Zoom_TF_Antenne_0.png`
+**Description** :
+Extrait localisé dans le domaine temps-fréquence centré sur une zone d’intérêt du spectrogramme de l’antenne 0. Cette analyse fine permet d’examiner la présence de composantes intermittentes, interférences ou micro-modulations.
+
 
 ## Conclusion
 
